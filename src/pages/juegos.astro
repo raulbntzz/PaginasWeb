@@ -1,0 +1,169 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="GameHub - Catálogo de Juegos">
+  <section class="page-header">
+    <h1>Catálogo de Juegos</h1>
+    <p>Explora nuestra selección de los mejores videojuegos disponibles</p>
+  </section>
+
+  <section class="top-games">
+    <h2>Top 10 Juegos Más Populares</h2>
+    <ol class="games-list">
+      <li><strong>The Legend of Zelda: Tears of the Kingdom</strong> - Aventura épica en mundo abierto</li>
+      <li><strong>Baldur's Gate 3</strong> - RPG narrativo con infinitas posibilidades</li>
+      <li><strong>Elden Ring</strong> - Souls-like que redefinió el género</li>
+      <li><strong>God of War Ragnarök</strong> - Acción mitológica con narrativa magistral</li>
+      <li><strong>Resident Evil 4 Remake</strong> - Terror survival reinventado</li>
+      <li><strong>Starfield</strong> - Exploración espacial a gran escala</li>
+      <li><strong>Spider-Man 2</strong> - Acción superheroica en Nueva York</li>
+      <li><strong>Final Fantasy XVI</strong> - JRPG con combate espectacular</li>
+      <li><strong>Hogwarts Legacy</strong> - Aventura mágica en el mundo de Harry Potter</li>
+      <li><strong>Street Fighter 6</strong> - Lucha competitiva nueva generación</li>
+    </ol>
+  </section>
+
+  <section class="game-cards">
+    <h2>Destacados de la Semana</h2>
+    <div class="games-grid">
+      <div class="game-card">
+        <div class="game-icon">🗡️</div>
+        <h3>Dark Souls III</h3>
+        <p class="genre">Género: RPG de Acción</p>
+        <p class="description">Sumérgete en un mundo oscuro lleno de desafíos épicos y jefes memorables.</p>
+        <div class="rating">⭐⭐⭐⭐⭐ 9.5/10</div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon">🏎️</div>
+        <h3>Forza Horizon 5</h3>
+        <p class="genre">Género: Carreras</p>
+        <p class="description">Conduce por México en el simulador de carreras más espectacular y divertido.</p>
+        <div class="rating">⭐⭐⭐⭐⭐ 9.2/10</div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-icon">🔫</div>
+        <h3>Call of Duty: Modern Warfare III</h3>
+        <p class="genre">Género: FPS</p>
+        <p class="description">Acción trepidante en el shooter multijugador más popular del momento.</p>
+        <div class="rating">⭐⭐⭐⭐ 8.7/10</div>
+      </div>
+    </div>
+  </section>
+
+
+</BaseLayout>
+
+<style>
+  .page-header {
+    text-align: center;
+    padding: 40px 20px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    border: 1px solid #333;
+  }
+
+  .page-header p {
+    color: #b0b0b0;
+    font-size: 1.1rem;
+  }
+
+  .top-games {
+    background: #2a2a2a;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #3a3a3a;
+  }
+
+  .top-games h2 {
+    color: #e0e0e0;
+    margin-bottom: 25px;
+  }
+
+  .games-list {
+    list-style-position: inside;
+    padding: 0;
+  }
+
+  .games-list li {
+    color: #d0d0d0;
+    padding: 12px;
+    margin: 8px 0;
+    background: #1a1a1a;
+    border-radius: 5px;
+    border-left: 3px solid #606060;
+  }
+
+  .game-cards {
+    margin: 60px 0;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+  }
+
+  .game-card {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.2s ease;
+    text-align: center;
+    border: 1px solid #3a3a3a;
+  }
+
+  .game-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .game-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
+
+  .game-card h3 {
+    color: #e0e0e0;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+
+  .genre {
+    color: #909090;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  .description {
+    color: #b0b0b0;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .rating {
+    color: #d0d0d0;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px;
+    background: #1a1a1a;
+    border-radius: 5px;
+  }
+
+  @media (max-width: 768px) {
+
+    .games-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .top-games {
+      padding: 25px;
+    }
+  }
+</style>
