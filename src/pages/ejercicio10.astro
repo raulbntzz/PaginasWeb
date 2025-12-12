@@ -1,0 +1,17 @@
+---
+import Favoritos from '../components/Favoritos.jsx';
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Ejercicio 10 - Favoritos</title>
+	</head>
+	<body>
+		<a href="/">← Volver al índice</a>
+		<Favoritos client:load />
+	</body>
+</html>
