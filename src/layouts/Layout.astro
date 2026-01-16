@@ -1,0 +1,70 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} - MediaLab</title>
+		<link rel="stylesheet" href="/styles/global.css" />
+	</head>
+	<body>
+		<header>
+			<nav aria-label="Navegación principal">
+				<div class="nav-container">
+					<h1 class="logo">MediaLab</h1>
+					<button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
+					<ul class="nav-list">
+						<li>
+							<a href="/" class={currentPath === '/' ? 'active' : ''} aria-current={currentPath === '/' ? 'page' : undefined}>
+								Inicio
+							</a>
+						</li>
+						<li>
+							<a href="/galeria" class={currentPath === '/galeria' ? 'active' : ''} aria-current={currentPath === '/galeria' ? 'page' : undefined}>
+								Galería
+							</a>
+						</li>
+						<li>
+							<a href="/multimedia" class={currentPath === '/multimedia' ? 'active' : ''} aria-current={currentPath === '/multimedia' ? 'page' : undefined}>
+								Multimedia
+							</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<main id="main-content">
+			<slot />
+		</main>
+
+		<footer>
+			<p>MediaLab &copy; 2026 - Proyecto de accesibilidad web</p>
+		</footer>
+
+		<script>
+			const menuToggle = document.querySelector('.menu-toggle');
+			const navList = document.querySelector('.nav-list');
+
+			menuToggle?.addEventListener('click', () => {
+				const isOpen = navList?.classList.toggle('active');
+				menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+				menuToggle.classList.toggle('active');
+			});
+		</script>
+	</body>
+</html>

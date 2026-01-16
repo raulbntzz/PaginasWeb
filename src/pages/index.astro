@@ -1,16 +1,116 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Inicio">
+	<article>
+		<section>
+			<h2>Objetivo del Proyecto</h2>
+			<p>
+				La empresa ficticia MediaLab Studio, dedicada al diseño y desarrollo de interfaces web, ha recibido el encargo 
+				de crear un prototipo de aplicación web que sirva como laboratorio de pruebas para el uso de contenidos 
+				multimedia accesibles en proyectos web modernos. El objetivo de este prototipo es evaluar la capacidad del 
+				equipo de desarrollo para preparar recursos multimedia, integrarlos correctamente en interfaces web, añadir 
+				interactividad y verificar su accesibilidad y funcionamiento en distintos navegadores y dispositivos.
+			</p>
+			<p>
+				Como parte de este encargo, deberás desarrollar en React una mini aplicación web llamada “MediaLab Accesible”, 
+				que servirá como demostrador técnico de buenas prácticas en el tratamiento e integración de contenidos multimedia 
+				para la web. Durante el desarrollo trabajarás con un conjunto de archivos multimedia (imágenes, audio y vídeo), 
+				descargados de bancos de recursos libres, garantizando en todo momento el uso correcto de licencias y el respeto 
+				a los derechos de autor, así como la adecuación de los formatos empleados a su finalidad en la web.
+			</p>
+		</section>
+
+		<section>
+			<h2>Enfoque de Desarrollo</h2>
+			<ul class="lista">
+				<li><strong>Tecnologías:</strong> Astro + React para mejor rendimiento e interactividad</li>
+				<li><strong>Multimedia:</strong> Formatos múltiples (WebP, MP4, MP3)</li>
+				<li><strong>Accesibilidad:</strong> Navegación por teclado, contraste, ARIA</li>
+				<li><strong>Responsive:</strong> Diseño adaptativo móvil y escritorio</li>
+				<li><strong>Licencias:</strong> Todos los recursos de bancos libres</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Guía de Estilo</h2>
+			
+			<h3>Paleta de Colores</h3>
+			<div class="colores">
+				<div class="color-box primario">
+					<strong>Primario</strong><br/>#2563eb<br/><small>Header, botones, controles</small>
+				</div>
+				<div class="color-box texto">
+					<strong>Texto</strong><br/>#111<br/><small>Contenido principal</small>
+				</div>
+				<div class="color-box fondo">
+					<strong>Fondo claro</strong><br/>#f3f4f6<br/><small>Componentes</small>
+				</div>
+			</div>
+			<p><em>Todos los colores cumplen con contraste WCAG AA (ratio 4.5:1 mínimo)</em></p>
+
+			<h3>Tipografía</h3>
+			<p>
+				<strong>Fuente:</strong> System fonts (-apple-system, sans-serif)<br/>
+				<strong>Tamaños:</strong><br/>
+				• H1: 2.5rem (40px)<br/>
+				• H2: 2rem (32px)<br/>
+				• H3: 1.5rem (24px)<br/>
+				• Base: 1rem (16px)<br/>
+				• Pequeño: 0.9rem (14px)
+			</p>
+
+			<h3>Componentes Reutilizables</h3>
+			<div class="botones">
+				<button class="btn">Botón Primario</button>
+			</div>
+			
+			<h3>Espaciado</h3>
+			<p>Sistema de espaciado consistente:</p>
+			<ul class="lista">
+				<li>0.25rem (4px) - Gaps mínimos</li>
+				<li>0.5rem (8px) - Padding botones pequeños</li>
+				<li>1rem (16px) - Gaps y padding estándar</li>
+				<li>1.5rem (24px) - Padding cards, gaps grandes</li>
+				<li>2rem (32px) - Padding secciones, gaps nav</li>
+			</ul>
+		</section>
+	</article>
+</Layout>
+
+<style>
+	section {
+		margin-bottom: 3rem;
+	}
+
+	.lista {
+		margin-left: 1.5rem;
+		line-height: 1.8;
+	}
+
+	.colores {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 1rem;
+		margin: 1.5rem 0;
+	}
+
+	.color-box {
+		color: white;
+		padding: 1.5rem;
+		border-radius: 0.5rem;
+		text-align: center;
+	}
+
+	.primario { background: #2563eb; }
+	.texto { background: #111; }
+	.fondo { background: #f3f4f6; color: #111; }
+
+	.botones {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin: 1.5rem 0;
+	}
+</style>

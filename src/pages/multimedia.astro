@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Multimedia">
+	<h1>Contenido Multimedia</h1>
+
+	<section>
+		<h2>Audio</h2>
+		<audio controls class="audio-player">
+			<source src="/audio/audio1.mp3" type="audio/mpeg">
+			Tu navegador no soporta el elemento de audio.
+		</audio>
+	</section>
+
+	<section>
+		<h2>Vídeo</h2>
+		<div class="video-container">
+			<iframe
+				width="560"
+				height="315"
+				src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+				title="Cancion Never Gonna Give You Up"
+				frameborder="0"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+				allowfullscreen
+			></iframe>
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.audio-player {
+		width: 100%;
+		max-width: 500px;
+		margin: 1.5rem auto;
+		display: block;
+	}
+
+	.video-container {
+		position: relative;
+		padding-bottom: 56.25%;
+		height: 0;
+		overflow: hidden;
+		margin: 1.5rem auto;
+	}
+
+	.video-container iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GaleriaComponent from '../components/Galeria';
+import Carrusel from '../components/Carrusel';
+---
+
+<Layout title="Galería">
+	<h1>Galería de Imágenes</h1>
+	
+	<section>
+		<h2>Carrusel de Imágenes</h2>
+		<p>Carrusel interactivo con navegación manual y reproducción automática:</p>
+		<Carrusel client:load />
+	</section>
+
+	<section>
+		<h2>Galería Interactiva</h2>
+		<GaleriaComponent client:load />
+	</section>
+</Layout>
