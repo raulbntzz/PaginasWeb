@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const imagenes = [
+  {
+    id: 1,
+    titulo: 'Energía Renovable',
+    descripcion: 'Paneles solares como fuente de energía limpia y sostenible',
+    url: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&h=600&fit=crop',
+    categoria: 'Sostenibilidad'
+  },
+  {
+    id: 2,
+    titulo: 'Transformación Digital',
+    descripcion: 'Tecnología y análisis de datos para la toma de decisiones',
+    url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
+    categoria: 'Digitalización'
+  },
+  {
+    id: 3,
+    titulo: 'Ciudad Sostenible',
+    descripcion: 'Urbanismo verde integrado con tecnología inteligente',
+    url: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=600&fit=crop',
+    categoria: 'Sostenibilidad'
+  },
+  {
+    id: 4,
+    titulo: 'Tecnología Verde',
+    descripcion: 'Innovación tecnológica al servicio del medio ambiente',
+    url: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&h=600&fit=crop',
+    categoria: 'Tecnología'
+  },
+  {
+    id: 5,
+    titulo: 'Datos y Analytics',
+    descripcion: 'Big Data para la medición de indicadores de sostenibilidad',
+    url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
+    categoria: 'Digitalización'
+  },
+  {
+    id: 6,
+    titulo: 'Movilidad Sostenible',
+    descripcion: 'Transporte eléctrico y reducción de emisiones',
+    url: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=600&fit=crop',
+    categoria: 'Sostenibilidad'
+  },
+  {
+    id: 7,
+    titulo: 'IoT y Sensores',
+    descripcion: 'Internet de las cosas para monitoreo ambiental',
+    url: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&h=600&fit=crop',
+    categoria: 'Tecnología'
+  },
+  {
+    id: 8,
+    titulo: 'Economía Circular',
+    descripcion: 'Reciclaje y reutilización de recursos',
+    url: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800&h=600&fit=crop',
+    categoria: 'Sostenibilidad'
+  },
+  {
+    id: 9,
+    titulo: 'Cloud Computing',
+    descripcion: 'Infraestructura en la nube para eficiencia energética',
+    url: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&h=600&fit=crop',
+    categoria: 'Digitalización'
+  }
+];
+
+const categorias = [...new Set(imagenes.map(img => img.categoria))];
+---
+
+<Layout title="Galería - Digitalización y Sostenibilidad">
+  <div class="container-lg py-3">
+    <div class="mb-4">
+      <h2 class="h3 mb-1">Galería de Digitalización y Sostenibilidad</h2>
+      <p class="text-muted">
+        Recursos visuales que ilustran la transformación digital y el compromiso con la sostenibilidad
+      </p>
+    </div>
+
+    <!-- Filtros más estrechos y centrados -->
+    <div class="row mb-4">
+      <div class="col-12 col-md-10 col-lg-8 col-xl-7 mx-auto">
+        <div class="card">
+          <div class="card-body py-3">
+            <div class="d-flex gap-2 flex-wrap justify-content-center">
+              <button class="btn btn-primary filter-btn active" data-category="todas">
+                Todas ({imagenes.length})
+              </button>
+              {categorias.map(cat => (
+                <button class="btn btn-outline-primary filter-btn" data-category={cat}>
+                  {cat} ({imagenes.filter(img => img.categoria === cat).length})
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Galería -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="gallery-grid">
+      {imagenes.map(imagen => (
+        <div class="col gallery-item" data-category={imagen.categoria}>
+          <div class="card h-100 shadow-sm">
+            <img
+              src={imagen.url}
+              alt={imagen.titulo}
+              class="card-img-top"
+              style="height: 250px; object-fit: cover;"
+              loading="lazy"
+            />
+            <div class="card-body">
+              <span class="badge bg-primary mb-2">{imagen.categoria}</span>
+              <h3 class="card-title h5">{imagen.titulo}</h3>
+              <p class="card-text text-muted small">{imagen.descripcion}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .filter-btn.active {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const category = button.getAttribute('data-category') || 'todas';
+
+        filterButtons.forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        galleryItems.forEach((item) => {
+          const itemCategory = item.getAttribute('data-category') || '';
+          const show = category === 'todas' || itemCategory === category;
+          item.classList.toggle('d-none', !show); // <-- Bootstrap hide/show
+        });
+      });
+    });
+  });
+</script>
+

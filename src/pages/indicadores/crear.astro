@@ -1,0 +1,131 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const error = Astro.url.searchParams.get('error');
+const success = Astro.url.searchParams.get('success');
+
+if (Astro.request.method === 'POST') {
+	try {
+		const formData = await Astro.request.formData();
+		
+		const indicador = {
+			tipo: formData.get('tipo') as string,
+			categoria: formData.get('categoria') as string,
+			nombre: formData.get('nombre') as string,
+			descripcion: formData.get('descripcion') as string,
+			valor: formData.get('valor') as string,
+			unidad: formData.get('unidad') as string,
+			fecha: formData.get('fecha') as string,
+			ambito: formData.get('ambito') as string,
+		};
+
+		const response = await fetch('http://localhost:5211/api/indicadores', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(indicador),
+		});
+
+		if (response.ok) {
+			return Astro.redirect('/indicadores?success=created');
+		} else {
+			return Astro.redirect('/indicadores/crear?error=create-failed');
+		}
+	} catch (e) {
+		console.error(e);
+		return Astro.redirect('/indicadores/crear?error=api-error');
+	}
+}
+
+const today = new Date().toISOString().split('T')[0];
+---
+
+<Layout title="Crear Indicador">
+	<div class="row">
+		<div class="col-lg-8 mx-auto">
+			<div class="card">
+				<div class="card-body">
+					<h2 class="h3 mb-4">Crear Nuevo Indicador</h2>
+					
+					{error === 'create-failed' && (
+						<div class="alert alert-danger alert-dismissible fade show">
+							<strong>Error:</strong> No se pudo crear el indicador. Verifica los datos.
+							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+						</div>
+					)}
+					
+					{error === 'api-error' && (
+						<div class="alert alert-danger alert-dismissible fade show">
+							<strong>Error:</strong> No se pudo conectar con la API.
+							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+						</div>
+					)}
+
+					<form method="POST">
+						<div class="row g-3">
+							<div class="col-md-6">
+								<label for="tipo" class="form-label">Tipo *</label>
+								<select name="tipo" id="tipo" class="form-select" required>
+									<option value="">Seleccionar...</option>
+									<option value="Económico">Económico</option>
+									<option value="Social">Social</option>
+									<option value="Ambiental">Ambiental</option>
+									<option value="Tecnológico">Tecnológico</option>
+								</select>
+							</div>
+
+							<div class="col-md-6">
+								<label for="categoria" class="form-label">Categoría *</label>
+								<input type="text" name="categoria" id="categoria" class="form-control" required />
+							</div>
+
+							<div class="col-12">
+								<label for="nombre" class="form-label">Nombre *</label>
+								<input type="text" name="nombre" id="nombre" class="form-control" required />
+							</div>
+
+							<div class="col-12">
+								<label for="descripcion" class="form-label">Descripción</label>
+								<textarea name="descripcion" id="descripcion" rows="3" class="form-control"></textarea>
+							</div>
+
+							<div class="col-md-6">
+								<label for="valor" class="form-label">Valor *</label>
+								<input type="text" name="valor" id="valor" class="form-control" required />
+							</div>
+
+							<div class="col-md-6">
+								<label for="unidad" class="form-label">Unidad</label>
+								<input type="text" name="unidad" id="unidad" class="form-control" placeholder="ej: %, kg, €" />
+							</div>
+
+							<div class="col-md-6">
+								<label for="fecha" class="form-label">Fecha *</label>
+								<input type="date" name="fecha" id="fecha" value={today} class="form-control" required />
+							</div>
+
+							<div class="col-md-6">
+								<label for="ambito" class="form-label">Ámbito *</label>
+								<select name="ambito" id="ambito" class="form-select" required>
+									<option value="">Seleccionar...</option>
+									<option value="Nacional">Nacional</option>
+									<option value="Regional">Regional</option>
+									<option value="Local">Local</option>
+									<option value="Global">Global</option>
+								</select>
+							</div>
+
+							<div class="col-12 mt-4">
+								<div class="d-flex gap-2">
+									<button type="submit" class="btn btn-primary">Crear Indicador</button>
+									<a href="/indicadores" class="btn btn-secondary">Cancelar</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</Layout>
