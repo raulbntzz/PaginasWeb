@@ -1,0 +1,144 @@
+---
+export const prerender = false;
+
+import Layout from '../../../layouts/Layout.astro';
+import { IndicadorApiService } from '../../../lib/api';
+
+const { id } = Astro.params;
+
+if (!id) return Astro.redirect('/indicadores');
+
+let indicador = null;
+let error = '';
+
+// POST -> actualizar
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData();
+
+    const updatedIndicador = {
+      id: Number(id),
+      tipo: formData.get('tipo') as string,
+      categoria: formData.get('categoria') as string,
+      nombre: formData.get('nombre') as string,
+      descripcion: formData.get('descripcion') as string,
+      valor: formData.get('valor') as string,
+      unidad: formData.get('unidad') as string,
+      fecha: formData.get('fecha') as string,
+      ambito: formData.get('ambito') as string,
+    };
+
+    const response = await fetch(`http://localhost:5211/api/indicadores/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedIndicador),
+    });
+
+    if (response.ok) {
+      return Astro.redirect('/indicadores?success=updated');
+    } else {
+      error = 'Error al actualizar el indicador. Verifica los datos.';
+    }
+  } catch (e) {
+    console.error(e);
+    error = 'Error al conectar con la API';
+  }
+}
+
+// GET -> cargar indicador
+try {
+  indicador = await IndicadorApiService.getByIdAsync(Number(id));
+  if (!indicador) return Astro.redirect('/indicadores?error=not-found');
+} catch (e) {
+  console.error(e);
+  error = 'Error al cargar el indicador';
+}
+
+const fechaFormateada = indicador ? new Date(indicador.fecha).toISOString().split('T')[0] : '';
+---
+
+<Layout title="Editar Indicador">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h3 mb-0">Editar Indicador #{id}</h2>
+          </div>
+
+          {error && (
+            <div class="alert alert-danger alert-dismissible fade show">
+              <strong>Error:</strong> {error}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          )}
+
+          {indicador && (
+            <form method="POST">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="tipo" class="form-label">Tipo *</label>
+                  <select name="tipo" id="tipo" class="form-select" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="Económico" selected={indicador.tipo === 'Económico'}>Económico</option>
+                    <option value="Social" selected={indicador.tipo === 'Social'}>Social</option>
+                    <option value="Ambiental" selected={indicador.tipo === 'Ambiental'}>Ambiental</option>
+                    <option value="Tecnológico" selected={indicador.tipo === 'Tecnológico'}>Tecnológico</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="categoria" class="form-label">Categoría *</label>
+                  <input type="text" name="categoria" id="categoria" class="form-control" value={indicador.categoria} required />
+                </div>
+
+                <div class="col-12">
+                  <label for="nombre" class="form-label">Nombre *</label>
+                  <input type="text" name="nombre" id="nombre" class="form-control" value={indicador.nombre} required />
+                </div>
+
+                <div class="col-12">
+                  <label for="descripcion" class="form-label">Descripción</label>
+                  <textarea name="descripcion" id="descripcion" rows="3" class="form-control">{indicador.descripcion}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="valor" class="form-label">Valor *</label>
+                  <input type="text" name="valor" id="valor" class="form-control" value={indicador.valor} required />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="unidad" class="form-label">Unidad</label>
+                  <input type="text" name="unidad" id="unidad" class="form-control" value={indicador.unidad || ''} placeholder="ej: %, kg, €" />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="fecha" class="form-label">Fecha *</label>
+                  <input type="date" name="fecha" id="fecha" value={fechaFormateada} class="form-control" required />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="ambito" class="form-label">Ámbito *</label>
+                  <select name="ambito" id="ambito" class="form-select" required>
+                    <option value="">Seleccionar...</option>
+                    <option value="Nacional" selected={indicador.ambito === 'Nacional'}>Nacional</option>
+                    <option value="Regional" selected={indicador.ambito === 'Regional'}>Regional</option>
+                    <option value="Local" selected={indicador.ambito === 'Local'}>Local</option>
+                    <option value="Global" selected={indicador.ambito === 'Global'}>Global</option>
+                  </select>
+                </div>
+
+                <div class="col-12 mt-4">
+                  <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <a href="/indicadores" class="btn btn-outline-secondary">Cancelar</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

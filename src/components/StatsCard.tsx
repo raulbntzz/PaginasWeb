@@ -53,10 +53,6 @@ export default function StatsCard({ value, label, icon, color, suffix = '' }: St
           flex-shrink: 0;
         }
 
-        .stats-info {
-          flex: 1;
-        }
-
         .stats-value {
           font-size: 2rem;
           font-weight: 800;

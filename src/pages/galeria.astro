@@ -70,13 +70,10 @@ const imagenes = [
 const categorias = [...new Set(imagenes.map(img => img.categoria))];
 ---
 
-<Layout title="Galería - Digitalización y Sostenibilidad">
-  <div class="container-lg py-3">
+<Layout title="Galería">
+  <div class="py-3">
     <div class="mb-4">
-      <h2 class="h3 mb-1">Galería de Digitalización y Sostenibilidad</h2>
-      <p class="text-muted">
-        Recursos visuales que ilustran la transformación digital y el compromiso con la sostenibilidad
-      </p>
+      <h2 class="h3 mb-1"><i class="fa-solid fa-images"></i>Galería de Digitalización y Sostenibilidad</h2>
     </div>
 
     <!-- Filtros más estrechos y centrados -->
@@ -137,15 +134,14 @@ const categorias = [...new Set(imagenes.map(img => img.categoria))];
 
     filterButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const category = button.getAttribute('data-category') || 'todas';
+        const category = button.dataset.category || 'todas';
 
         filterButtons.forEach((btn) => btn.classList.remove('active'));
         button.classList.add('active');
 
         galleryItems.forEach((item) => {
-          const itemCategory = item.getAttribute('data-category') || '';
-          const show = category === 'todas' || itemCategory === category;
-          item.classList.toggle('d-none', !show); // <-- Bootstrap hide/show
+          const show = category === 'todas' || item.dataset.category === category;
+          item.classList.toggle('d-none', !show);
         });
       });
     });

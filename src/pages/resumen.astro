@@ -1,4 +1,6 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import { IndicadorApiService } from '../lib/api';
 import type { Indicador } from '../lib/types';
@@ -11,230 +13,167 @@ let indicadoresRecientes: Indicador[] = [];
 let error = '';
 
 try {
-	indicadores = await IndicadorApiService.getAllAsync();
-	totalPorTipo = await IndicadorApiService.getTotalPorTipoAsync();
-	
-	totalPorAmbito = indicadores.reduce((acc, ind) => {
-		acc[ind.ambito] = (acc[ind.ambito] || 0) + 1;
-		return acc;
-	}, {} as Record<string, number>);
+  indicadores = await IndicadorApiService.getAllAsync();
+  totalPorTipo = await IndicadorApiService.getTotalPorTipoAsync();
 
-	totalPorCategoria = indicadores.reduce((acc, ind) => {
-		acc[ind.categoria] = (acc[ind.categoria] || 0) + 1;
-		return acc;
-	}, {} as Record<string, number>);
+  totalPorAmbito = indicadores.reduce((acc, ind) => {
+    acc[ind.ambito] = (acc[ind.ambito] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
 
-	indicadoresRecientes = [...indicadores]
-		.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
-		.slice(0, 5);
+  totalPorCategoria = indicadores.reduce((acc, ind) => {
+    acc[ind.categoria] = (acc[ind.categoria] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  indicadoresRecientes = [...indicadores]
+    .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
+    .slice(0, 5);
 
 } catch (e) {
-	error = 'Error al conectar con la API. Asegúrate de que esté corriendo en http://localhost:5211';
-	console.error(e);
+  error = 'Error al conectar con la API. Asegúrate de que esté corriendo en http://localhost:5211';
+  console.error(e);
 }
 ---
 
 <Layout title="Resumen de Indicadores">
-	{error && (
-		<div class="alert alert-danger alert-dismissible fade show">
-			<strong>Error:</strong> {error}
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	)}
+    {error && (
+      <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Error:</strong> {error}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    )}
 
-	{!error && (
-		<>
-			<div class="mb-4">
-				<h2 class="h3 mb-1">Resumen General de Indicadores</h2>
-				<p class="text-muted">Vista global del estado de digitalización y sostenibilidad</p>
-			</div>
+    {!error && (
+      <>
+        <div class="mb-4">
+          <h2 class="h3 mb-1"><i class="fa-solid fa-book"></i>Resumen General de Indicadores</h2>
+        </div>
 
-			<div class="row g-4 mb-4">
-				<div class="col-md-6 col-lg-3">
-					<div class="card bg-primary text-white h-100">
-						<div class="card-body">
-							<h3 class="h6 text-uppercase mb-2 opacity-75">Total de Indicadores</h3>
-							<p class="display-4 fw-bold mb-0">{indicadores.length}</p>
-						</div>
-					</div>
-				</div>
+        <div class="row g-4 mb-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="card bg-primary text-white h-100">
+              <div class="card-body">
+                <h3 class="h6 text-uppercase mb-2 opacity-75">Total de Indicadores</h3>
+                <p class="display-4 fw-bold mb-0">{indicadores.length}</p>
+              </div>
+            </div>
+          </div>
 
-				<div class="col-md-6 col-lg-3">
-					<div class="card h-100">
-						<div class="card-body">
-							<h3 class="h6 text-uppercase text-muted mb-2">Tipos Diferentes</h3>
-							<p class="display-4 fw-bold mb-0">{Object.keys(totalPorTipo).length}</p>
-						</div>
-					</div>
-				</div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h3 class="h6 text-uppercase text-muted mb-2">Tipos Diferentes</h3>
+                <p class="display-4 fw-bold mb-0">{Object.keys(totalPorTipo).length}</p>
+              </div>
+            </div>
+          </div>
 
-				<div class="col-md-6 col-lg-3">
-					<div class="card h-100">
-						<div class="card-body">
-							<h3 class="h6 text-uppercase text-muted mb-2">Ámbitos</h3>
-							<p class="display-4 fw-bold mb-0">{Object.keys(totalPorAmbito).length}</p>
-						</div>
-					</div>
-				</div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h3 class="h6 text-uppercase text-muted mb-2">Ámbitos</h3>
+                <p class="display-4 fw-bold mb-0">{Object.keys(totalPorAmbito).length}</p>
+              </div>
+            </div>
+          </div>
 
-				<div class="col-md-6 col-lg-3">
-					<div class="card h-100">
-						<div class="card-body">
-							<h3 class="h6 text-uppercase text-muted mb-2">Categorías</h3>
-							<p class="display-4 fw-bold mb-0">{Object.keys(totalPorCategoria).length}</p>
-						</div>
-					</div>
-				</div>
-			</div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h3 class="h6 text-uppercase text-muted mb-2">Categorías</h3>
+                <p class="display-4 fw-bold mb-0">{Object.keys(totalPorCategoria).length}</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-			<div class="card mb-4">
-				<div class="card-body">
-					<h3 class="h5 mb-3">Distribución por Tipo</h3>
-					<p class="text-muted mb-3">
-						Agrupación de indicadores según su clasificación principal (Económico, Social, Ambiental, Tecnológico)
-					</p>
-					<div class="table-responsive">
-						<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>Tipo</th>
-							<th class="text-end">Cantidad</th>
-							<th class="text-end">Porcentaje</th>
-						</tr>
-					</thead>
-					<tbody>
-						{Object.entries(totalPorTipo).map(([tipo, cantidad]) => (
-							<tr>
-								<td><span class="badge bg-primary">{tipo}</span></td>
-								<td class="text-end">{cantidad}</td>
-								<td class="text-end">
-									<strong>{((cantidad / indicadores.length) * 100).toFixed(1)}%</strong>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="h5 mb-3">Distribución por Tipo</h3>
+            <p class="text-muted mb-3">
+              Agrupación de indicadores según su clasificación principal (Digitalización o Sostenibilidad.)
+            </p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th class="text-end">Cantidad</th>
+                    <th class="text-end">Porcentaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(totalPorTipo).map(([tipo, cantidad]) => (
+                    <tr>
+                      <td><span class="badge bg-primary">{tipo}</span></td>
+                      <td class="text-end">{cantidad}</td>
+                      <td class="text-end"><strong>{((cantidad / indicadores.length) * 100).toFixed(1)}%</strong></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
-			<div class="card mb-4">
-				<div class="card-body">
-					<h3 class="h5 mb-3">Distribución por Ámbito</h3>
-					<p class="text-muted mb-3">
-						Cobertura geográfica de los indicadores (Nacional, Regional, Local, Global)
-					</p>
-					<div class="table-responsive">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>Ámbito</th>
-									<th class="text-end">Cantidad</th>
-									<th class="text-end">Porcentaje</th>
-								</tr>
-							</thead>
-							<tbody>
-								{Object.entries(totalPorAmbito)
-									.sort((a, b) => b[1] - a[1])
-									.map(([ambito, cantidad]) => (
-									<tr>
-										<td><span class="badge bg-secondary">{ambito}</span></td>
-										<td class="text-end">{cantidad}</td>
-										<td class="text-end">
-											<strong>{((cantidad / indicadores.length) * 100).toFixed(1)}%</strong>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="h5 mb-3">Distribución por Ámbito</h3>
+            <p class="text-muted mb-3">Ámbito de los indicadores (Empresa, Departamento de Sistemas...)</p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Ámbito</th>
+                    <th class="text-end">Cantidad</th>
+                    <th class="text-end">Porcentaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(totalPorAmbito)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([ambito, cantidad]) => (
+                      <tr>
+                        <td><span class="badge bg-secondary">{ambito}</span></td>
+                        <td class="text-end">{cantidad}</td>
+                        <td class="text-end"><strong>{((cantidad / indicadores.length) * 100).toFixed(1)}%</strong></td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
 
-			<div class="card mb-4">
-				<div class="card-body">
-					<h3 class="h5 mb-3">Distribución por Categoría</h3>
-					<p class="text-muted mb-3">
-						Agrupación según las categorías específicas de cada indicador
-					</p>
-					<div class="table-responsive">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th>Categoría</th>
-									<th class="text-end">Cantidad</th>
-									<th class="text-end">Porcentaje</th>
-								</tr>
-							</thead>
-							<tbody>
-								{Object.entries(totalPorCategoria)
-									.sort((a, b) => b[1] - a[1])
-									.map(([categoria, cantidad]) => (
-									<tr>
-										<td>{categoria}</td>
-										<td class="text-end">{cantidad}</td>
-										<td class="text-end">
-											<strong>{((cantidad / indicadores.length) * 100).toFixed(1)}%</strong>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-
-			<div class="card mb-4">
-				<div class="card-body">
-					<h3 class="h5 mb-3">Indicadores Recientes</h3>
-					<p class="text-muted mb-3">
-						Últimos 5 indicadores registrados en el sistema
-					</p>
-					<div class="table-responsive">
-						<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Tipo</th>
-							<th>Valor</th>
-							<th>Fecha</th>
-							<th>Acciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						{indicadoresRecientes.map(indicador => (
-							<tr>
-								<td><strong>{indicador.nombre}</strong></td>
-								<td><span class="badge bg-primary">{indicador.tipo}</span></td>
-								<td>{indicador.valor} <small class="text-muted">{indicador.unidad || ''}</small></td>
-								<td><small>{new Date(indicador.fecha).toLocaleDateString('es-ES')}</small></td>
-								<td>
-									<a href={`/indicadores/${indicador.id}`} class="btn btn-sm btn-outline-primary">
-										Ver detalles
-									</a>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-
-			<div class="card border-start border-primary border-4 bg-light">
-				<div class="card-body">
-					<h3 class="h5 mb-3">Interpretación de la Información</h3>
-					<p class="mb-3">
-						<strong>Digitalización:</strong> Los indicadores de tipo "Tecnológico" reflejan el grado de adopción de tecnologías digitales en la organización, incluyendo sistemas de información, automatización de procesos y transformación digital.
-					</p>
-					<p class="mb-3">
-						<strong>Sostenibilidad:</strong> Los indicadores "Ambientales", "Sociales" y "Económicos" miden el impacto de las actividades organizacionales en las tres dimensiones del desarrollo sostenible (Triple Bottom Line).
-					</p>
-					<p class="mb-0">
-						<strong>Ámbito de aplicación:</strong> La distribución por ámbitos permite identificar el alcance de las mediciones, desde impactos locales hasta globales, facilitando la toma de decisiones estratégicas a diferentes niveles.
-					</p>
-				</div>
-			</div>
-		</>
-	)}
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="h5 mb-3">Distribución por Categoría</h3>
+            <p class="text-muted mb-3">Agrupación según las categorías específicas de cada indicador</p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Categoría</th>
+                    <th class="text-end">Cantidad</th>
+                    <th class="text-end">Porcentaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(totalPorCategoria)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([categoria, cantidad]) => (
+                      <tr>
+                        <td>{categoria}</td>
+                        <td class="text-end">{cantidad}</td>
+                        <td class="text-end"><strong>{((cantidad / indicadores.length) * 100).toFixed(1)}%</strong></td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </>
+    )}
 </Layout>

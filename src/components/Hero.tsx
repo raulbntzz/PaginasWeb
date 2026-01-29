@@ -4,9 +4,6 @@ export default function Hero() {
   return (
     <div className="hero-section">
       <div className="hero-content">
-        <div className="hero-badge">
-          <span>Sostenibilidad & Digitalización</span>
-        </div>
         <h1 className="hero-title">
           EcoData Solutions
           <span className="hero-subtitle">S.L.</span>
@@ -20,14 +17,8 @@ export default function Hero() {
         <div className="hero-buttons">
           <a href="/indicadores" className="btn-primary">
             <span>Explorar Indicadores</span>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
           </a>
           <a href="/resumen" className="btn-secondary">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M10 3V17M3 10H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
             <span>Ver Resumen</span>
           </a>
         </div>
@@ -51,20 +42,6 @@ export default function Hero() {
           max-width: 800px;
           margin: 0 auto;
           text-align: center;
-        }
-
-        .hero-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: rgba(255, 255, 255, 0.2);
-          backdrop-filter: blur(10px);
-          padding: 8px 20px;
-          border-radius: 100px;
-          color: white;
-          font-size: 14px;
-          font-weight: 500;
-          margin-bottom: 24px;
         }
 
         .hero-title {
@@ -92,7 +69,6 @@ export default function Hero() {
         }
 
         .highlight {
-          color: #ffd700;
           font-weight: 600;
         }
 

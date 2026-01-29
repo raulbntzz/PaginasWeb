@@ -10,314 +10,180 @@ let error = '';
 let tipos: string[] = [];
 let ambitos: string[] = [];
 
-const success = Astro.url.searchParams.get('success');
-const urlError = Astro.url.searchParams.get('error');
-
 const url = new URL(Astro.request.url);
+
+const success = url.searchParams.get('success');
+const urlError = url.searchParams.get('error');
 const tipoFiltro = url.searchParams.get('tipo') || '';
 const ambitoFiltro = url.searchParams.get('ambito') || '';
 
 try {
-	// Obtener todos los indicadores
-	if (tipoFiltro && ambitoFiltro) {
+  const todos = await IndicadorApiService.getAllAsync();
+  tipos = [...new Set(todos.map(i => i.tipo))].sort();
+  ambitos = [...new Set(todos.map(i => i.ambito))].sort();
 
-	const porTipo = await IndicadorApiService.getByTipoAsync(tipoFiltro);
-	indicadores = porTipo.filter(i =>
-		i.ambito.toLowerCase().trim() === ambitoFiltro.toLowerCase().trim()
-	);
-	} else if (tipoFiltro) {
-	indicadores = await IndicadorApiService.getByTipoAsync(tipoFiltro);
-	} else if (ambitoFiltro) {
-	indicadores = await IndicadorApiService.getByAmbitoAsync(ambitoFiltro);
-	} else {
-	indicadores = await IndicadorApiService.getAllAsync();
-	}
-
-	console.log('Total indicadores obtenidos:', indicadores.length);
-	
-	if (indicadores.length > 0) {
-		console.log('Primer indicador - tipo:', indicadores[0].tipo, 'ambito:', indicadores[0].ambito);
-	}
-	
-	// Obtener listas únicas para los selects
-	tipos = [...new Set(indicadores.map(i => i.tipo))].sort();
-	ambitos = [...new Set(indicadores.map(i => i.ambito))].sort();
-	console.log('Tipos disponibles:', tipos);
-	console.log('Ámbitos disponibles:', ambitos.slice(0, 3));
+  if (tipoFiltro && ambitoFiltro) {
+    const porTipo = await IndicadorApiService.getByTipoAsync(tipoFiltro);
+    indicadores = porTipo.filter(i =>
+      i.ambito.toLowerCase().trim() === ambitoFiltro.toLowerCase().trim()
+    );
+  } else if (tipoFiltro) {
+    indicadores = await IndicadorApiService.getByTipoAsync(tipoFiltro);
+  } else if (ambitoFiltro) {
+    indicadores = await IndicadorApiService.getByAmbitoAsync(ambitoFiltro);
+  } else {
+    indicadores = todos;
+  }
 } catch (e) {
-	error = 'Error al conectar con la API. Asegúrate de que esté corriendo en http://localhost:5211';
-	console.error(e);
+  error = 'Error al conectar con la API. Asegúrate de que esté corriendo en http://localhost:5211';
+  console.error(e);
 }
 ---
 
 <Layout title="Listado de Indicadores">
-	<div class="d-flex justify-content-between align-items-center mb-4">
-		<h2 class="h3 mb-0">Listado de Indicadores</h2>
-		<a href="/indicadores/crear" class="btn btn-primary">+ Crear Indicador</a>
-	</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="h3 mb-0"><i class="fa-solid fa-arrow-up"></i>Listado de Indicadores</h2>
+      <a href="/indicadores/crear" class="btn btn-primary">+ Crear Indicador</a>
+    </div>
 
-	{success === 'created' && (
-		<div class="alert alert-success alert-dismissible fade show">
-			<strong>Éxito:</strong> Indicador creado correctamente
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	)}
+    {success === 'created' && (
+      <div class="alert alert-success alert-dismissible fade show">
+        <strong>Éxito:</strong> Indicador creado correctamente
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    )}
 
-	{success === 'updated' && (
-		<div class="alert alert-success alert-dismissible fade show">
-			<strong>Éxito:</strong> Indicador actualizado correctamente
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	)}
+    {success === 'updated' && (
+      <div class="alert alert-success alert-dismissible fade show">
+        <strong>Éxito:</strong> Indicador actualizado correctamente
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    )}
 
-	{urlError === 'not-found' && (
-		<div class="alert alert-danger alert-dismissible fade show">
-			<strong>Error:</strong> No se encontró el indicador solicitado
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	)}
+    {success === 'deleted' && (
+      <div class="alert alert-success alert-dismissible fade show">
+        <strong>Éxito:</strong> Indicador eliminado correctamente
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    )}
 
-	{error && (
-		<div class="alert alert-danger alert-dismissible fade show">
-			<strong>Error:</strong> {error}
-			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-		</div>
-	)}
+    {urlError === 'not-found' && (
+      <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Error:</strong> No se encontró el indicador solicitado
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    )}
 
-	{!error && (
-		<div class="card mb-4">
-			<div class="card-body">
-				<div class="d-flex justify-content-between align-items-center mb-3">
-					<h3 class="h5 mb-0">Filtros</h3>
-					<span class="badge" style="font-size: 1rem; padding: 8px 16px; background: #0066CC; color: white;">
-						Indicadores encontrados: {indicadores.length}
-					</span>
-				</div>
-				<form id="filterForm" method="get" action="/indicadores" class="row g-3">
-					<div class="col-md-4">
-						<label for="tipo" class="form-label">Filtrar por Tipo:</label>
-						<select name="tipo" id="tipo" class="form-select">
-							<option value="">Todos los tipos</option>
-							{tipos.map(tipo => {
-								const value = tipo.toLowerCase().trim();
-								return (
-									<option
-									value={value}
-									selected={value === tipoFiltro.toLowerCase().trim()}
-									>
-									{tipo}
-									</option>
-								);
-							})}
-						</select>
-					</div>
-					<div class="col-md-4">
-						<label for="ambito" class="form-label">Filtrar por Ámbito:</label>
-						<select name="ambito" id="ambito" class="form-select">
-							<option value="">Todos los ámbitos</option>
-							{ambitos.map(ambito => {
-								const value = ambito.toLowerCase().trim();
-								return (
-									<option
-									value={value}
-									selected={value === ambitoFiltro.toLowerCase().trim()}
-									>
-									{ambito}
-									</option>
-								);
-							})}
-						</select>
-					</div>
-					<div class="col-md-4 d-flex align-items-end gap-2">
-						<button type="submit" class="btn btn-primary flex-grow-1">Aplicar</button>
-						<a href="/indicadores" class="btn btn-secondary flex-grow-1">Limpiar</a>
-					</div>
-				</form>
-				
-				<script is:inline>
-					document.getElementById('filterForm')?.addEventListener('submit', function(e) {
-						const tipo = document.getElementById('tipo').value;
-						const ambito = document.getElementById('ambito').value;
-						console.log('Formulario enviado - Tipo:', tipo, 'Ámbito:', ambito);
-						console.log('URL que se generará:', window.location.pathname + '?tipo=' + tipo + '&ambito=' + ambito);
-					});
-				</script>
-			</div>
-		</div>
-	)}
+    {error && (
+      <div class="alert alert-danger alert-dismissible fade show">
+        <strong>Error:</strong> {error}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    )}
 
-	{!error && indicadores.length > 0 && (
-		<div class="card">
-			<div class="card-body">
-				<div class="table-responsive">
-					<table class="table table-hover align-middle">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Tipo</th>
-						<th>Categoría</th>
-						<th>Nombre</th>
-						<th>Valor</th>
-						<th>Unidad</th>
-						<th>Fecha</th>
-						<th>Ámbito</th>
-						<th>Acciones</th>
-					</tr>
-				</thead>
-				<tbody>
-					{indicadores.map(indicador => (
-						<tr>
-							<td>{indicador.id}</td>
-							<td><span class="badge bg-primary">{indicador.tipo}</span></td>
-							<td>{indicador.categoria}</td>
-							<td><strong>{indicador.nombre}</strong></td>
-							<td>{indicador.valor}</td>
-							<td><small class="text-muted">{indicador.unidad || '-'}</small></td>
-							<td><small>{new Date(indicador.fecha).toLocaleDateString('es-ES')}</small></td>
-							<td><span class="badge bg-secondary">{indicador.ambito}</span></td>
-							<td>
-								<div class="btn-group btn-group-sm">
-									<button 
-										class="btn btn-outline-primary view-modal-btn" 
-										data-id={indicador.id}
-									>
-										Ver
-									</button>
-									<a href={`/indicadores/${indicador.id}/editar`} class="btn btn-outline-secondary">Editar</a>
-									<button 
-										class="btn btn-outline-danger delete-btn" 
-										data-id={indicador.id}
-									>
-										Eliminar
-									</button>
-								</div>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-			</div>
-		</div>
-		</div>
-	)}
+    {!error && (
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h5 mb-0">Filtros</h3>
+            <span class="badge" style="font-size: 1rem; padding: 8px 16px; background: #0d6efd; color: white;">
+              Indicadores encontrados: {indicadores.length}
+            </span>
+          </div>
 
-	{!error && indicadores.length === 0 && (
-		<div class="card">
-			<div class="card-body text-center py-5">
-				<p class="text-muted mb-3">No hay indicadores disponibles.</p>
-				<a href="/indicadores/crear" class="btn btn-primary">Crear el primer indicador</a>
-			</div>
-		</div>
-	)}
+          <form method="get" action="/indicadores" class="row g-3">
+            <div class="col-md-4">
+              <label for="tipo" class="form-label">Filtrar por Tipo:</label>
+              <select name="tipo" id="tipo" class="form-select">
+                <option value="">Todos los tipos</option>
+                {tipos.map(tipo => {
+                  const value = tipo.toLowerCase().trim();
+                  return (
+                    <option value={value} selected={value === tipoFiltro.toLowerCase().trim()}>
+                      {tipo}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
 
-	<div class="modal fade" id="modal-resumen" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Resumen del Indicador</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<div class="row g-3">
-						<div class="col-12">
-							<label class="text-uppercase small text-muted fw-bold">ID</label>
-							<p id="modal-id" class="fs-5 mb-0"></p>
-						</div>
-						<div class="col-12">
-							<label class="text-uppercase small text-muted fw-bold">Nombre</label>
-							<p id="modal-nombre" class="fs-5 fw-bold mb-0"></p>
-						</div>
-						<div class="col-6">
-							<label class="text-uppercase small text-muted fw-bold">Tipo</label>
-							<p id="modal-tipo" class="mb-0"></p>
-						</div>
-						<div class="col-6">
-							<label class="text-uppercase small text-muted fw-bold">Categoría</label>
-							<p id="modal-categoria" class="mb-0"></p>
-						</div>
-						<div class="col-8">
-							<label class="text-uppercase small text-muted fw-bold">Valor</label>
-							<p id="modal-valor" class="fs-3 fw-bold text-primary mb-0"></p>
-						</div>
-						<div class="col-4">
-							<label class="text-uppercase small text-muted fw-bold">Unidad</label>
-							<p id="modal-unidad" class="mb-0"></p>
-						</div>
-						<div class="col-6">
-							<label class="text-uppercase small text-muted fw-bold">Fecha</label>
-							<p id="modal-fecha" class="mb-0"></p>
-						</div>
-						<div class="col-6">
-							<label class="text-uppercase small text-muted fw-bold">Ámbito</label>
-							<p id="modal-ambito" class="mb-0"></p>
-						</div>
-						<div class="col-12">
-							<label class="text-uppercase small text-muted fw-bold">Descripción</label>
-							<p id="modal-descripcion" class="mb-0"></p>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<a id="modal-btn-editar" href="#" class="btn btn-secondary">Editar</a>
-					<a id="modal-btn-detalles" href="#" class="btn btn-primary">Ver Detalles</a>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="col-md-4">
+              <label for="ambito" class="form-label">Filtrar por Ámbito:</label>
+              <select name="ambito" id="ambito" class="form-select">
+                <option value="">Todos los ámbitos</option>
+                {ambitos.map(ambito => {
+                  const value = ambito.toLowerCase().trim();
+                  return (
+                    <option value={value} selected={value === ambitoFiltro.toLowerCase().trim()}>
+                      {ambito}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            <div class="col-md-4 d-flex align-items-end gap-2">
+              <button type="submit" class="btn btn-primary flex-grow-1">Aplicar</button>
+              <a href="/indicadores" class="btn btn-secondary flex-grow-1">Limpiar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+
+    {!error && indicadores.length > 0 && (
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tipo</th>
+                  <th>Categoría</th>
+                  <th>Nombre</th>
+                  <th>Valor</th>
+                  <th>Unidad</th>
+                  <th>Fecha</th>
+                  <th>Ámbito</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {indicadores.map(indicador => (
+                  <tr>
+                    <td>{indicador.id}</td>
+                    <td><span class="badge bg-primary">{indicador.tipo}</span></td>
+                    <td>{indicador.categoria}</td>
+                    <td><strong>{indicador.nombre}</strong></td>
+                    <td>{indicador.valor}</td>
+                    <td><small class="text-muted">{indicador.unidad || '-'}</small></td>
+                    <td><small>{new Date(indicador.fecha).toLocaleDateString('es-ES')}</small></td>
+                    <td><span class="badge bg-secondary">{indicador.ambito}</span></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <a href={`/indicadores/ver/${indicador.id}`} class="btn btn-outline-primary">Ver</a>
+                        <a href={`/indicadores/editar/${indicador.id}`} class="btn btn-outline-secondary">Editar</a>
+                        <a href={`/indicadores/eliminar/${indicador.id}`} class="btn btn-outline-danger">Eliminar</a>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {!error && indicadores.length === 0 && (
+      <div class="card">
+        <div class="card-body text-center py-5">
+          <p class="text-muted mb-3">No hay indicadores disponibles.</p>
+          <a href="/indicadores/crear" class="btn btn-primary">Crear el primer indicador</a>
+        </div>
+      </div>
+    )}
 </Layout>
-
-<script define:vars={{ indicadores }}>
-	document.addEventListener('DOMContentLoaded', () => {
-		const modal = new bootstrap.Modal(document.getElementById('modal-resumen'));
-		
-		document.querySelectorAll('.view-modal-btn').forEach(button => {
-			button.addEventListener('click', (e) => {
-				const id = e.target.dataset.id;
-				const indicador = indicadores.find(i => i.id == id);
-				
-				if (indicador) {
-					document.getElementById('modal-id').textContent = indicador.id;
-					document.getElementById('modal-nombre').textContent = indicador.nombre;
-					document.getElementById('modal-tipo').textContent = indicador.tipo;
-					document.getElementById('modal-categoria').textContent = indicador.categoria;
-					document.getElementById('modal-valor').textContent = indicador.valor;
-					document.getElementById('modal-unidad').textContent = indicador.unidad || '-';
-					document.getElementById('modal-fecha').textContent = new Date(indicador.fecha).toLocaleDateString('es-ES');
-					document.getElementById('modal-ambito').textContent = indicador.ambito;
-					document.getElementById('modal-descripcion').textContent = indicador.descripcion;
-					document.getElementById('modal-btn-editar').href = `/indicadores/${id}/editar`;
-					document.getElementById('modal-btn-detalles').href = `/indicadores/${id}`;
-					modal.show();
-				}
-			});
-		});
-
-		const deleteButtons = document.querySelectorAll('.delete-btn');
-		
-		deleteButtons.forEach(button => {
-			button.addEventListener('click', async (e) => {
-				const id = e.target.dataset.id;
-				
-				if (!confirm('¿Estás seguro de que deseas eliminar este indicador?')) {
-					return;
-				}
-
-				try {
-					const response = await fetch(`http://localhost:5211/api/indicadores/${id}`, {
-						method: 'DELETE'
-					});
-
-					if (response.ok) {
-						alert('Indicador eliminado correctamente');
-						window.location.reload();
-					} else {
-						alert('Error al eliminar el indicador');
-					}
-				} catch (error) {
-					console.error(error);
-					alert('Error al conectar con la API');
-				}
-			});
-		});
-	});
-</script>

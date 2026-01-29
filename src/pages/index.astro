@@ -5,105 +5,43 @@ import FeatureCard from '../components/FeatureCard';
 import StatsCard from '../components/StatsCard';
 ---
 
-<Layout title="EcoData Solutions - Digitalización y Sostenibilidad">
-	<Hero />
+<Layout title="EcoData Solutions">
+    <Hero />
 
-	<!-- Estadísticas -->
-	<div class="row g-4 mb-5">
-		<div class="col-md-6 col-lg-3">
-			<StatsCard
-				value={24}
-				label="Indicadores Activos"
-				icon="📊"
-				color="#0066CC"
-			/>
-		</div>
-		<div class="col-md-6 col-lg-3">
-			<StatsCard
-				value={4}
-				label="Ámbitos"
-				icon="🎯"
-				color="#48bb78"
-			/>
-		</div>
-		<div class="col-md-6 col-lg-3">
-			<StatsCard
-				value={100}
-				label="Sostenibilidad"
-				icon="🌱"
-				color="#ed8936"
-				suffix="%"
-			/>
-		</div>
-		<div class="col-md-6 col-lg-3">
-			<StatsCard
-				value={95}
-				label="Digitalización"
-				icon="💡"
-				color="#4299e1"
-				suffix="%"
-			/>
-		</div>
-	</div>
+    <!-- Estadísticas visuales -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-6 col-lg-3">
+        <StatsCard value={24} label="Indicadores Activos" icon="📊" color="#0066CC" />
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <StatsCard value={4} label="Ámbitos" icon="🎯" color="#ed8936" />
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <StatsCard value={100} label="Sostenibilidad" icon="🌳" color="#48bb78" suffix="%" />
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <StatsCard value={95} label="Digitalización" icon="💻" color="#6c757d" suffix="%" />
+      </div>
+    </div>
 
-	<!-- Características principales -->
-	<div class="mb-5">
-		<div class="text-center mb-4">
-			<h2 class="display-6 fw-bold mb-2">Funcionalidades Principales</h2>
-			<p class="text-muted">Herramientas para la gestión de indicadores</p>
-		</div>
-
-		<div class="row g-4">
-			<div class="col-md-6 col-lg-3">
-				<FeatureCard
-					icon="📊"
-					title="Consulta de Indicadores"
-					description="Visualización completa del listado de indicadores con opciones de filtrado."
-					color="#0066CC"
-				/>
-			</div>
-			<div class="col-md-6 col-lg-3">
-				<FeatureCard
-					icon="⚙️"
-					title="Gestión Completa"
-					description="Creación, edición y eliminación de indicadores mediante formularios."
-					color="#48bb78"
-				/>
-			</div>
-			<div class="col-md-6 col-lg-3">
-				<FeatureCard
-					icon="📈"
-					title="Análisis y Resumen"
-					description="Estadísticas y totales para facilitar la toma de decisiones."
-					color="#ed8936"
-				/>
-			</div>
-			<div class="col-md-6 col-lg-3">
-				<FeatureCard
-					icon="🎨"
-					title="Galería Visual"
-					description="Recursos visuales relacionados con sostenibilidad y digitalización."
-					color="#4299e1"
-				/>
-			</div>
-		</div>
-	</div>
-
-	<!-- Call to action -->
-	<div class="mb-5">
-		<div class="card" style="background: linear-gradient(135deg, #0066CC 0%, #0052a3 100%); color: white; border: none;">
-			<div class="card-body p-5 text-center">
-				<h2 class="h3 fw-bold mb-3">¿Listo para empezar?</h2>
-				<p class="mb-4">Accede a la plataforma de gestión de indicadores de sostenibilidad</p>
-				<div class="d-flex gap-3 justify-content-center flex-wrap">
-					<a href="/indicadores" class="btn btn-light btn-lg px-4 py-3" style="border-radius: 12px; font-weight: 600;">
-						Ver Indicadores →
-					</a>
-					<a href="/resumen" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 12px; font-weight: 600; border-width: 2px;">
-						Ver Resumen
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- Características principales -->
+    <div class="mb-5">
+      <div class="text-center mb-4">
+        <h2 class="display-6 fw-bold mb-2">Funcionalidades Principales</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <FeatureCard icon="📊" title="Consulta de Indicadores" description="Visualización completa del listado de indicadores con opciones de filtrado." color="#0066CC" />
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <FeatureCard icon="⚙️" title="Gestión Completa" description="Creación, edición y eliminación de indicadores mediante formularios." color="#ed8936" />
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <FeatureCard icon="📈" title="Análisis y Resumen" description="Estadísticas y totales para facilitar la toma de decisiones." color="#48bb78" />
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <FeatureCard icon="📷" title="Galería Visual" description="Recursos visuales relacionados con sostenibilidad y digitalización." color="#6c757d" />
+        </div>
+      </div>
+    </div>
 </Layout>

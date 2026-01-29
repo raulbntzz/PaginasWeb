@@ -1,0 +1,89 @@
+---
+export const prerender = false;
+
+import Layout from '../../../layouts/Layout.astro';
+import { IndicadorApiService } from '../../../lib/api';
+
+const { id } = Astro.params;
+
+if (!id) return Astro.redirect('/indicadores');
+
+let indicador = null;
+let error = '';
+
+try {
+  indicador = await IndicadorApiService.getByIdAsync(Number(id));
+  if (!indicador) return Astro.redirect('/indicadores?error=not-found');
+} catch (e) {
+  console.error(e);
+  error = 'Error al cargar el indicador. Verifica que la API esté corriendo.';
+}
+---
+
+<Layout title={`Indicador #${id}`}>
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h3 mb-0">Detalles del Indicador #{id}</h2>
+          </div>
+
+          {error && (
+            <div class="alert alert-danger alert-dismissible fade show">
+              <strong>Error:</strong> {error}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          )}
+
+          {indicador && (
+            <>
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label class="text-uppercase small text-muted fw-bold">Tipo</label>
+                  <p class="fs-5 mb-3">{indicador.tipo}</p>
+
+                  <label class="text-uppercase small text-muted fw-bold">Categoría</label>
+                  <p class="fs-5 mb-3">{indicador.categoria}</p>
+
+                  <label class="text-uppercase small text-muted fw-bold">Nombre</label>
+                  <p class="fs-5 fw-bold mb-3">{indicador.nombre}</p>
+
+                  <label class="text-uppercase small text-muted fw-bold">Ámbito</label>
+                  <p class="fs-5 mb-0">{indicador.ambito}</p>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="text-uppercase small text-muted fw-bold">Valor</label>
+                  <p class="fs-3 fw-bold text-primary mb-3">
+                    {indicador.valor} <span class="fs-6 fw-normal text-muted">{indicador.unidad || ''}</span>
+                  </p>
+
+                  <label class="text-uppercase small text-muted fw-bold">Fecha</label>
+                  <p class="fs-5 mb-3">
+                    {new Date(indicador.fecha).toLocaleDateString('es-ES')}
+                  </p>
+
+                  {indicador.descripcion && (
+                    <>
+                      <label class="text-uppercase small text-muted fw-bold">Descripción</label>
+                      <p class="mb-0">{indicador.descripcion}</p>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <hr class="my-4" />
+
+              <div class="d-flex justify-content-between flex-wrap gap-2">
+                <a class="btn btn-primary" href={`../../indicadores`}>
+                  Volver
+                </a>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
